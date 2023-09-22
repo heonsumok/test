@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezen.aa.sawon.SawonService">
+
+<insert id="sawoninsert" parameterType="com.ezen.aa.sawon.SawonDTO">
+insert into sawon0914 values(#{param1},#{param2},#{param3},#{param4},#{param5})
+</insert>
+
+<select id="sawonout" resultType="com.ezen.aa.sawon.SawonDTO">
+select bunho,name,ho,fa,jik,
+(decode (ho,1,1500000,
+			2,2000000,
+			3,2500000,
+			4,3000000,
+			5,3500000,
+			6,4000000,
+			7,4500000,
+			8,5000000,
+			9,6000000,
+			  7000000
+))as kibon,
+(decode (fa,1,100000,
+            2,200000,
+            3,300000,
+            4,400000,
+              500000 ))as fasudang,
+(case jik
+    when '이사' then 500000
+    when '부장' then 450000
+    when '과장' then 400000   
+    when '대리' then 300000
+    when '사원' then 200000
+    end
+ )as jiksudang
+
+ from sawon0914
+</select>
+
+<insert id="jobinsert" parameterType="com.ezen.aa.sawon.JobDTO">
+insert into month0914 values(#{param1},#{param2},#{param3})
+</insert>
+
+<select id="jobout" resultType="com.ezen.aa.sawon.JobDTO">
+select name,ipsaday,nowday,
+(decode (trunc(MONTHS_BETWEEN(nowday,ipsaday)/12)+1,
+		1,1500000,
+		2,2000000,
+		3,2500000,
+		4,3000000,
+		  4000000
+)) as kibon 
+from month0914
+</select>
+
+</mapper>
