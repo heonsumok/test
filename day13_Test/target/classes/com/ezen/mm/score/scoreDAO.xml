@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ezen.mm.score.ScoreService">
+
+<insert id="scoreinsert" parameterType="com.ezen.mm.score.ScoreService">
+insert into score0920 values(#{param1},#{param2},#{param3},#{param4},#{param5})
+</insert>
+
+<select id="scoreout" resultType="com.ezen.mm.score.ScoreDTO">
+select num,name,kor,eng,mat,(kor+eng+mat) as tot,(kor+eng+mat)/3 as avg,
+
+case
+	when (kor+eng+mat)/3 >= 90 then 'A'
+	when (kor+eng+mat)/3 >= 80 then 'B'
+	when (kor+eng+mat)/3 >= 70 then 'C'
+	when (kor+eng+mat)/3 >= 60 then 'D'
+	else 'F'
+	end "hak",
+rank() over(order by (kor+eng+mat) desc) as rank
+
+from score0920
+</select>
+
+<select id="cntnotice" resultType="int">
+   select count(*)from score0920
+</select>
+<!-- 페이징처리에서 게시글 조회 22222222 -->
+<select id="selectnotice" resultType="com.ezen.mm.score.ScoreDTO">
+   select * from (
+   select rownum rn,A.num,name,kor,eng,mat,(kor+eng+mat) as tot,(kor+eng+mat)/3 as avg,
+
+case
+	when (kor+eng+mat)/3 >= 90 then 'A'
+	when (kor+eng+mat)/3 >= 80 then 'B'
+	when (kor+eng+mat)/3 >= 70 then 'C'
+	when (kor+eng+mat)/3 >= 60 then 'D'
+	else 'F'
+	end "hak",
+rank() over(order by (kor+eng+mat) desc) as rank from(  
+   select * from score0920 order by num DESC,kor asc)A)
+   where rn between #{start} AND #{end}
+</select>
+
+</mapper>
